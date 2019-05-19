@@ -5,7 +5,7 @@ coffee
 
   # add 10 for every click
   click = -> count += 10
-  foo « count + 10000 # can also use "$: foo = ..."
+  foo ≈ count + 10000 # can also use "$: foo = ..." #!# NOTE: no need for COMPUTED VALUES!!!
 
   # add 100 every 3 seconds
   interval = setInterval () =>
