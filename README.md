@@ -40,7 +40,7 @@ pug
 
 ### Tooling support
 
-VS Code tooling support for the above is possible by make adding a few lines to the syntax file from the standard Svelte VS Code extension.
+VS Code tooling support for the above is possible by adding a few lines to the syntax file from the standard Svelte VS Code extension.
 
 The code required to support actually compiling the above Svelte Compact SFC files is possible by adding an `onBefore()` handler to the `rollup.config.js` file.
 
