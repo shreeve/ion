@@ -46,7 +46,7 @@ The code required to support actually compiling the above Svelte Compact SFC fil
 
 ### The "destiny operator"
 
-Svelte supports a "destiny operator", which is a beautifully elegant way to improve the idea of reactivity. Use of the destiny operator allows relationships between variables to be created, which have native reactivity, just like a spreadsheet. This creates a sort of "entanglement" among the variables, such that when one value changes, all dependencies are updated in an extremely performant and simple way.
+Svelte supports a [destiny operator](https://bit.ly/2Jrw3Il), which is a beautifully elegant way to improve the idea of reactivity. Use of the destiny operator allows relationships between variables to be created, which have native reactivity, just like a spreadsheet. This creates a sort of "entanglement" among the variables, such that when one value changes, all dependencies are updated in an extremely performant and simple way.
 
 There are two ways to use the destiny operator in Ion. The first is the standard `$:` Svelte prefix. The second is to use the `≈` ("approximates" or "follows") sigil. Both are shown here:
 
