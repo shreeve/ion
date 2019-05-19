@@ -1,6 +1,6 @@
 ## ion
 
-Ion is a test app based on the [Svelte 3](https://svelte.dev/) ([:octocat:](https://github.com/sveltejs/svelte)).
+Ion is a test app based on [Svelte 3](https://svelte.dev/) ([:octocat:](https://github.com/sveltejs/svelte)).
 
 A key element of Ion is that it uses the following technologies with Svelte:
 
