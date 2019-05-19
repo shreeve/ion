@@ -7,8 +7,10 @@ import { terser } from 'rollup-plugin-terser'
 // needed to support svelte-compact
 import autoProcess from 'svelte-preprocess'
 import stripIndent from 'strip-indent'
-import { pug } from 'svelte-preprocess'
+import { pug, coffee } from 'svelte-preprocess'
+
 const pugCompiler = pug().markup
+const coffeeCompiler = coffee().script
 
 const production = !process.env.ROLLUP_WATCH
 
@@ -26,17 +28,22 @@ export default {
 			// enable svelte-compact files, via an onBefore() handler
 			preprocess: autoProcess({
 				onBefore({ content, filename }) {
-					const regex = /(?<=\n|^)(pug|coffee|stylus)[ \t]*(?:\n|$)([\s\S]*?)(\n(?=\S)|$)/g;
+					const regex = /(?<=\n|^)(pug|coffee|stylus)([ \t]*.*?)(?:\n|$)([\s\S]*?)(\n(?=\S)|$)/g
 					const types = {
 						pug: 'template',
 						coffee: 'script',
 						stylus: 'style'
-					};
-					return content.replace(regex, function (skip, lang, body) {
+          }
+					return content.replace(regex, function (data, lang, misc, body) {
 						if (lang == "pug") { // workaround autoProcess bug
 							return pugCompiler({content: stripIndent(body), filename}).code + "\n"
+            } else if (lang == "coffee") { // enable "$:" support (the destiny operator), using "b « a + 1" (b gets a + 1)
+              body = body.replace(/^([ \t]*)\$:[ \t]*([$\w]+)[ \t]*=(\s*)/mg, "$1$2 «$3") // $: -> destiny
+              data = coffeeCompiler({content: stripIndent(body), attributes: { lang: 'coffeescript' }, filename}) // compile
+              data.code = data.code.replace(/^([ \t]*)([$\w]+)\(«\(([\s\S]*?)\)\);/mg, "$1$$: $2 = $3") // destiny -> $:
+              return `<script${misc}>\n${data.code}\n</script>\n` // final JS
 						}
-						return `<${types[lang]} lang='${lang}'>\n${body}</${types[lang]}>\n`
+						return `<${types[lang]} lang='${lang}'${misc}>\n${body}</${types[lang]}>\n`
 					})
 				},
 			}),
