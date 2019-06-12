@@ -15,9 +15,11 @@ coffee
 stylus
   p
     color: blue
+  h5
+    color: red
 
 pug
   button(on:click="{click}")
     | Clicked {count} {count === 1 ? 'time' : 'times'}
   p Hello, {name}!
-  p Foo is now... {foo}! Can you believe it?
+  h5 Foo is now... {foo}! Can you even believe it?
