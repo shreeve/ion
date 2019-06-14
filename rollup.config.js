@@ -41,7 +41,7 @@ export default {
             if (lang == "pug") { // workaround autoProcess bug
               return pugCompiler({content: stripIndent(body), filename}).code + "\n"
             } else if (lang == "coffee") { // enable "$:" support (the destiny operator), using "b ≈ a + 1" (b gets a + 1)
-              body = body.replace(/^([ \t]*)\$:[ \t]*([$\w]+)[ \t]*=(\s*)/mg, "$1$2 ≈$3") // $: -> destiny
+              body = body.replace(/^([ \t]*)\$:[ \t]*([$\w]+)[ \t]*=/mg, "$1$2 ≈") // $: -> destiny
               data = coffeeCompiler({content: stripIndent(body), attributes: { lang: 'coffeescript' }, filename}) // compile
               data.code = data.code.replace(/^([ \t]*)([$\w]+)\(≈\(([\s\S]*?)\)\);/mg, "$1$$: $2 = $3") // destiny -> $:
               return `<script${misc}>\n${data.code}\n</script>\n` // final JS
