@@ -4,15 +4,15 @@ import commonjs from 'rollup-plugin-commonjs'
 import livereload from 'rollup-plugin-livereload'
 import { terser } from 'rollup-plugin-terser'
 
-import coffeescript from 'rollup-plugin-coffee-script'
+import coffeePlugin from 'rollup-plugin-coffee-script'
 
 // needed to support svelte-compact
 import autoProcess from 'svelte-preprocess'
+import { pug, coffeescript } from 'svelte-preprocess'
 import stripIndent from 'strip-indent'
-import { pug, coffee } from 'svelte-preprocess'
 
 const pugCompiler = pug().markup
-const coffeeCompiler = coffee().script
+const coffeeCompiler = coffeescript().script
 
 const production = !process.env.ROLLUP_WATCH
 
@@ -25,7 +25,7 @@ export default {
     file: 'public/bundle.js'
   },
   plugins: [
-    coffeescript(),
+    coffeePlugin(),
     svelte({
 
       // enable svelte-compact files, via an onBefore() handler
@@ -41,7 +41,7 @@ export default {
             if (lang == "pug") { // workaround autoProcess bug
               return pugCompiler({content: stripIndent(body), filename}).code + "\n"
             } else if (lang == "coffee") { // enable "$:" support (the destiny operator), using "b ≈ a + 1" (b gets a + 1)
-              body = body.replace(/^([ \t]*)\$:[ \t]*([$\w]+)[ \t]*=(\s*)/mg, "$1$2 ≈$3") // $: -> destiny
+              body = body.replace(/^([ \t]*)\$:[ \t]*([$\w]+)[ \t]*=/mg, "$1$2 ≈") // $: -> destiny
               data = coffeeCompiler({content: stripIndent(body), attributes: { lang: 'coffeescript' }, filename}) // compile
               data.code = data.code.replace(/^([ \t]*)([$\w]+)\(≈\(([\s\S]*?)\)\);/mg, "$1$$: $2 = $3") // destiny -> $:
               return `<script${misc}>\n${data.code}\n</script>\n` // final JS
@@ -53,27 +53,22 @@ export default {
 
       // enable run-time checks when not in production
       dev: !production,
-      // we'll extract any component CSS out into
-      // a separate file — better for performance
+
+      // extract CSS to a file, better performance
       css: css => {
         css.write('public/bundle.css')
       }
     }),
 
-    // If you have external dependencies installed from
-    // npm, you'll most likely need these plugins. In
-    // some cases you'll need additional configuration —
-    // consult the documentation for details:
-    // https://github.com/rollup/rollup-plugin-commonjs
+    // external deps will probably need these plugins
+    // See: https://github.com/rollup/rollup-plugin-commonjs
     resolve(),
     commonjs(),
 
-    // Watch the `public` directory and refresh the
-    // browser on changes when not in production
+    // live reload changes to 'public', unless in production
     !production && livereload('public'),
 
-    // If we're building for production (npm run build
-    // instead of npm run dev), minify
+    // minify, if in production mode
     production && terser()
   ],
   watch: {
