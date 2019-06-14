@@ -4,7 +4,7 @@ import commonjs from 'rollup-plugin-commonjs'
 import livereload from 'rollup-plugin-livereload'
 import { terser } from 'rollup-plugin-terser'
 
-import coffeescript from 'rollup-plugin-coffee-script'
+import coffeePlugin from 'rollup-plugin-coffee-script'
 
 // needed to support svelte-compact
 import autoProcess from 'svelte-preprocess'
@@ -25,7 +25,7 @@ export default {
     file: 'public/bundle.js'
   },
   plugins: [
-    coffeescript(),
+    coffeePlugin(),
     svelte({
 
       // enable svelte-compact files, via an onBefore() handler
