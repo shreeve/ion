@@ -8,11 +8,11 @@ import coffeePlugin from 'rollup-plugin-coffee-script'
 
 // needed to support svelte-compact
 import autoProcess from 'svelte-preprocess'
+import { pug, coffeescript } from 'svelte-preprocess'
 import stripIndent from 'strip-indent'
-import { pug, coffee } from 'svelte-preprocess'
 
 const pugCompiler = pug().markup
-const coffeeCompiler = coffee().script
+const coffeeCompiler = coffeescript().script
 
 const production = !process.env.ROLLUP_WATCH
 
