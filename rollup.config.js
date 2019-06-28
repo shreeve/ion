@@ -40,10 +40,10 @@ export default {
           const code = content.replace(regex, function (data, lang, misc, body) {
 
             // allow the destiny operator in CoffeeScript
-            if (lang == "coffee") { // enable "$:" support (the destiny operator), using "b ≈ a + 1" (b gets a + 1)
-              body = body.replace(/^([ \t]*)\$:[ \t]*([$\w]+)[ \t]*=/mg, "$1$2 ≈") // $: -> destiny
+            if (lang == "coffee") { // enable "$:" support (the destiny operator), using "b « a + 1" (b gets a + 1)
+              body = body.replace(/^([ \t]*)\$:[ \t]*([$\w]+)[ \t]*=/mg, "$1$2 «") // $: -> destiny
               data = coffeeCompiler({ content: stripIndent(body), attributes: { lang: 'coffeescript' }, filename }) // compile
-              data.code = data.code.replace(/^([ \t]*)([$\w]+)\(≈\(([\s\S]*?)\)\);/mg, "$1$$: $2 = $3") // destiny -> $:
+              data.code = data.code.replace(/^([ \t]*)([$\w]+)\(«\(([\s\S]*?)\)\);/mg, "$1$$: $2 = $3") // destiny -> $:
               return `<script${misc}>\n${data.code}\n</script>\n` // final JS
             }
 
