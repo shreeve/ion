@@ -28,28 +28,34 @@ export default {
     coffeePlugin(),
     svelte({
 
-      // enable svelte-compact files, via an onBefore() handler
-      preprocess: autoProcess({
-        onBefore({ content, filename }) {
+      // enable svelte-compact files
+      preprocess: [{
+        markup({ content, filename }) {
           const regex = /(?<=\n|^)(pug|coffee|stylus)([ \t]*.*?)(?:\n|$)([\s\S]*?)(\n(?=\S)|$)/g
           const types = {
             pug: 'template',
             coffee: 'script',
             stylus: 'style'
           }
-          return content.replace(regex, function (data, lang, misc, body) {
-            if (lang == "pug") { // workaround autoProcess bug
-              return pugCompiler({content: stripIndent(body), filename}).code + "\n"
-            } else if (lang == "coffee") { // enable "$:" support (the destiny operator), using "b ≈ a + 1" (b gets a + 1)
+          const code = content.replace(regex, function (data, lang, misc, body) {
+
+            // allow the destiny operator in CoffeeScript
+            if (lang == "coffee") { // enable "$:" support (the destiny operator), using "b ≈ a + 1" (b gets a + 1)
               body = body.replace(/^([ \t]*)\$:[ \t]*([$\w]+)[ \t]*=/mg, "$1$2 ≈") // $: -> destiny
-              data = coffeeCompiler({content: stripIndent(body), attributes: { lang: 'coffeescript' }, filename}) // compile
+              data = coffeeCompiler({ content: stripIndent(body), attributes: { lang: 'coffeescript' }, filename }) // compile
               data.code = data.code.replace(/^([ \t]*)([$\w]+)\(≈\(([\s\S]*?)\)\);/mg, "$1$$: $2 = $3") // destiny -> $:
               return `<script${misc}>\n${data.code}\n</script>\n` // final JS
             }
+
+            // wrap SFC sections in tags
             return `<${types[lang]} lang='${lang}'${misc}>\n${body}</${types[lang]}>\n`
-          })
-        },
-      }),
+          });
+
+          return { code };
+        }
+      },
+        autoProcess()
+      ],
 
       // enable run-time checks when not in production
       dev: !production,
