@@ -26,7 +26,7 @@
   "devDependencies": {
     "coffeescript": "^2.4.1",
     "npm-run-all": "^4.1.5",
-    "postcss": "^7.0.16",
+    "postcss": "^8.2.10",
     "pug": "^2.0.3",
     "rollup": "^1.10.1",
     "rollup-plugin-coffee-script": "^2.0.0",
